@@ -1,87 +1,110 @@
 #include <stdio.h>
-#include <stdlib.h>
+#include <stdlib.h> // For malloc
+
 struct node
 {
     int data;
-    int priority;
+    int pri;
     struct node *next;
 };
-struct node *head=NULL;
+
+struct node *head = NULL;
 struct node *temp;
 struct node *temp1;
-void add(int data,int priority)
+
+void insert(int data, int pi)
 {
-    struct node *newnode=(struct node*)malloc(sizeof(struct node));
-    newnode->data=data;
-    newnode->priority=priority;
-    newnode->next=NULL;
-    if(head==NULL)
+    struct node *newnode = (struct node *)(malloc(sizeof(struct node)));
+    newnode->data = data;
+    newnode->pri = pi;
+    newnode->next = NULL;
+    
+    if (head == NULL)
     {
-        temp=head=newnode;
-        temp1=temp;
+        head = temp = newnode;
     }
-    else if(priority<temp1->priority)
+    else if (pi < head->pri)
     {
-        newnode->next=temp1;
-        temp1=newnode;
+        newnode->next = head;
+        head = newnode;
     }
     else
     {
-        temp->next=newnode;
-        temp=newnode;
+        struct node *curr = head;
+        while (curr->next != NULL && curr->next->pri < pi)
+        {
+            curr = curr->next;
+        }
+        newnode->next = curr->next;
+        curr->next = newnode;
     }
-    //temp->next=temp1;
 }
+
 void delete()
 {
-    if(head==NULL)
+    if (head == NULL)
     {
-        printf("list is empty");
-    }
-    else if(temp1==temp)
-    {
-        free(head);
-        head=temp=NULL;
+        printf("List is empty\n");
     }
     else
     {
-        temp1=temp1->next;
+        struct node *delete = head;
+        printf("%d\n", delete->data);
+        head = head->next;
+        free(delete);
     }
-    
 }
+
 void display()
 {
-    struct node *current = temp1; // Use a local pointer
-
-    while (current!=NULL)
+    if (head == NULL)
     {
-        printf("%d ", current->data);
-        current = current->next;
+        printf("List is empty\n");
     }
-    //printf("%d",current->data);
-
-    printf("\n");
+    else
+    {
+        temp1 = head;
+        while (temp1 != NULL)
+        {
+            printf("%d ", temp1->data);
+            temp1 = temp1->next;
+        }
+        printf("\n");
+    }
 }
 
 int main()
 {
-    int ch,d,p;
-    printf(" 1)add \n 2) delete \n 3) display \n 4) exit \n");
-    while(1)
+    int choice, data, pri;
+    while (1)
     {
-        printf("enter the option");
-        scanf("%d",&ch);
-        switch(ch)
+        printf("\nPriority Queue Operations\n");
+        printf("1. Insert\n");
+        printf("2. Delete\n");
+        printf("3. Display\n");
+        printf("4. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice)
         {
-            case 1 : printf("enter the data with priority");
-            scanf("%d %d",&d,&p);
-            add(d,p);
+        case 1:
+            printf("Enter data and priority: ");
+            scanf("%d %d", &data, &pri);
+            insert(data, pri);
             break;
-            case 2: delete();
+        case 2:
+            delete();
             break;
-            case 3: display();
+        case 3:
+            display();
             break;
-            case 4: return 0;
+        case 4:
+            exit(0);
+        default:
+            printf("Invalid choice\n");
         }
     }
+
+    return 0;
 }
